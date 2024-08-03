@@ -57,7 +57,7 @@ func NewServer(config *config.Http, overkiz *domain.Overkiz) (*Server, error) {
 	})
 
 	s.server = &http.Server{
-		Addr:    fmt.Sprintf(":%d", config.Port),
+		Addr:    fmt.Sprintf("%s:%d", config.Interface, config.Port),
 		Handler: r,
 	}
 	return s, nil

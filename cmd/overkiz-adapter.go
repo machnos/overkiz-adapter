@@ -19,11 +19,11 @@ func main() {
 	syncGroup, syncGroupContext := errgroup.WithContext(ctx)
 
 	// Parse command line parameters.
-	configFile := *flag.String("config-file", "config.json", "Full path to the configuration file")
+	configFile := flag.String("config-file", "config.json", "Full path to the configuration file")
 	flag.Parse()
 
 	// Load configuration
-	configuration, err := config.LoadConfiguration(configFile)
+	configuration, err := config.LoadConfiguration(*configFile)
 	if err != nil {
 		log.Fatalf("Unable to load configuration file: %s", err.Error())
 		syscall.Exit(-1)

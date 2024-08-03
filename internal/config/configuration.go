@@ -13,6 +13,7 @@ type Configuration struct {
 }
 
 type Http struct {
+	Interface   string `json:"interface"`
 	Port        uint16 `json:"port"`
 	ContextRoot string `json:"context_root"`
 }
