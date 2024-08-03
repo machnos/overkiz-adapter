@@ -7,11 +7,9 @@ import (
 )
 
 type Configuration struct {
-	Region   string `json:"region" validate:"required,oneof='europe' 'middle east' 'africa' 'asia' 'pacific' 'north america'"`
-	Pod      string `json:"pod" validate:"required"`
-	UserID   string `json:"user_id" validate:"required"`
-	Password string `json:"password" validate:"required"`
-	Http     *Http  `json:"http" validate:"required"`
+	Token string `json:"token" validate:"required"`
+	Host  string `json:"host"`
+	Http  *Http  `json:"http" validate:"required"`
 }
 
 type Http struct {
