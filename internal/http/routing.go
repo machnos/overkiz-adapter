@@ -49,7 +49,10 @@ func NewServer(config *config.Http, overkiz *domain.Overkiz) (*Server, error) {
 
 	r.Route(contextRoot, func(r chi.Router) {
 		r.Route("/api/v1", func(r chi.Router) {
-			r.Get("/shutters", s.getShutters())
+			r.Get("/devices", s.getDevices())
+			r.Get("/devices/{class}", s.getDevices())
+			r.Get("/devices/RollerShutters/close", s.rollerShutter("close"))
+			r.Get("/devices/RollerShutters/open", s.rollerShutter("open"))
 		})
 	})
 
@@ -70,8 +73,29 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	return s.server.Shutdown(ctx)
 }
 
-func (s *Server) getShutters() http.HandlerFunc {
+func (s *Server) getDevices() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		render.JSON(w, r, fmt.Sprintf("Hello, %s", "Mark"))
+		class := chi.URLParam(r, "class")
+		render.JSON(w, r, s.overkiz.Devices(class))
+	}
+}
+
+func (s *Server) rollerShutter(actionName string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		deviceCount, _ := s.overkiz.RollerShutters(actionName)
+		if deviceCount == 0 {
+			w.WriteHeader(404)
+			_, err := w.Write([]byte("{\"error\":\"No RollerShutters found\"}"))
+			if err != nil {
+				log.Errorf("Error writing response: %v", err)
+			}
+		} else {
+			w.WriteHeader(202)
+			_, err := w.Write([]byte("{\"status\":\"Executing\"}"))
+			if err != nil {
+				log.Errorf("Error writing response: %v", err)
+			}
+		}
 	}
 }

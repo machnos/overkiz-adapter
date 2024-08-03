@@ -29,7 +29,7 @@ func main() {
 		syscall.Exit(-1)
 	}
 
-	overkiz, err := domain.NewOverkiz(configuration.Token, configuration.Host)
+	overkiz, err := domain.NewOverkiz(configuration.Token, configuration.Host, syncGroupContext)
 	if err != nil {
 		log.Fatalf("Unable to connect to Overkiz: %s", err.Error())
 		syscall.Exit(-1)
