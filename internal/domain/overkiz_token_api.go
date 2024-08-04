@@ -12,29 +12,32 @@ import (
 	"os"
 	"os/user"
 	"strconv"
+	"strings"
 	"time"
 )
 
 type OverkizTokenApi struct {
-	apiUrl string
+	rootUrl string
+	apiUrl  string
 }
 
 func NewOverkizTokenApi(regio string) (*OverkizTokenApi, error) {
 	o := &OverkizTokenApi{}
-	tokenHost := ""
+	host := ""
 	switch regio {
 	case "europe", "middle east", "africa":
-		tokenHost = "ha101-1.overkiz.com"
+		host = "ha101-1.overkiz.com"
 		break
 	case "asia", "pacific":
-		tokenHost = "ha201-1.overkiz.com"
+		host = "ha201-1.overkiz.com"
 		break
 	case "north america":
-		tokenHost = "ha401-1.overkiz.com"
+		host = "ha401-1.overkiz.com"
 	default:
 		return nil, fmt.Errorf("unknown overkiz regio: %s", regio)
 	}
-	o.apiUrl = fmt.Sprintf("https://%s/enduser-mobile-web/enduserAPI", tokenHost)
+	o.rootUrl = fmt.Sprintf("https://%s", host)
+	o.apiUrl = fmt.Sprintf("%s/enduser-mobile-web/enduserAPI", o.rootUrl)
 	return o, nil
 }
 
@@ -321,7 +324,7 @@ func (o *OverkizTokenApi) Doc() error {
 		return err
 	}
 
-	// Generate token
+	// Get the documentation
 	resp, err := client.Get(fmt.Sprintf("%s/doc", o.apiUrl))
 	if err != nil {
 		return err
@@ -337,6 +340,10 @@ func (o *OverkizTokenApi) Doc() error {
 	if resp.StatusCode != http.StatusOK {
 		return errors.New(string(body))
 	}
-	fmt.Println(string(body))
+	html := string(body)
+	replacer := strings.NewReplacer(
+		" src=\"/enduser-mobile-web/", fmt.Sprintf(" src=\"%s/enduser-mobile-web/", o.rootUrl),
+		" href=\"/enduser-mobile-web/", fmt.Sprintf(" href=\"%s/enduser-mobile-web/", o.rootUrl))
+	fmt.Println(replacer.Replace(html))
 	return nil
 }

@@ -10,6 +10,7 @@ import (
 	"overkiz-adapter/internal/config"
 	"overkiz-adapter/internal/domain"
 	"overkiz-adapter/internal/log"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -56,7 +57,9 @@ func NewServer(config *config.Http, overkiz *domain.Overkiz) (*Server, error) {
 			r.Get("/devices", s.getDevices())
 			r.Get("/devices/{class}", s.getDevices())
 			r.Get("/devices/RollerShutters/close", s.rollerShutter("close"))
+			r.Get("/devices/RollerShutters/close/{percentage}", s.rollerShutter("close"))
 			r.Get("/devices/RollerShutters/open", s.rollerShutter("open"))
+			r.Get("/devices/RollerShutters/open/{percentage}", s.rollerShutter("open"))
 		})
 	})
 
@@ -87,7 +90,30 @@ func (s *Server) getDevices() http.HandlerFunc {
 func (s *Server) rollerShutter(actionName string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		deviceCount, _ := s.overkiz.RollerShutters(actionName)
+		parameters := make([]string, 0)
+		action := actionName
+		if "open" == actionName || "close" == actionName {
+			percentage := chi.URLParam(r, "percentage")
+			if percentage != "" {
+				value, err := strconv.Atoi(percentage)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+				if value < 0 {
+					value = 0
+				} else if value > 100 {
+					value = 100
+				}
+				if "open" == actionName {
+					parameters = []string{fmt.Sprintf("%d", 100-value)}
+				} else {
+					parameters = []string{fmt.Sprintf("%d", value)}
+				}
+				action = "setClosure"
+			}
+		}
+		deviceCount, _ := s.overkiz.RollerShutters(action, parameters)
 		if deviceCount == 0 {
 			w.WriteHeader(404)
 			_, err := w.Write([]byte("{\"error\":\"No RollerShutters found\"}"))

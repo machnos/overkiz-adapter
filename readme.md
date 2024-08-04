@@ -111,10 +111,12 @@ Once the configuration file is created you can start the application by executin
 
 The api currently exposes the following endpoints
 
-| Path                                               | Function                            |
-|----------------------------------------------------|-------------------------------------|
-| <context_root>/api/v1/devices                      | List all devices                    |
-| <context_root>/api/v1/devices/{class}              | List all devices of a certain class | 
-| <context_root>/api/v1/devices/RollerShutters/open  | Opens all RollerShutter devices     |
-| <context_root>/api/v1/devices/RollerShutters/close | Closes all RollerShutter devices    |
+| Path                                                           | Function                                           |
+|----------------------------------------------------------------|----------------------------------------------------|
+| <context_root>/api/v1/devices                                  | List all devices                                   |
+| <context_root>/api/v1/devices/{class}                          | List all devices of a certain class                | 
+| <context_root>/api/v1/devices/RollerShutters/open              | Opens all RollerShutter devices                    |
+| <context_root>/api/v1/devices/RollerShutters/open/{percentage} | Opens all RollerShutter devices for {percentage}%  |
+| <context_root>/api/v1/devices/RollerShutters/close             | Closes all RollerShutter devices                   |
+| <context_root>/api/v1/devices/RollerShutters/close/{percentage}| Closes all RollerShutter devices for {percentage}% |
 

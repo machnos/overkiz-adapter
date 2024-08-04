@@ -37,6 +37,9 @@ func main() {
 	deleteCmd.StringVar(pod, "pin", "", "The PIN of the gateway")
 	deleteCmd.StringVar(uuid, "uuid", "", "The uuid of the token")
 
+	docCmd := flag.NewFlagSet("doc", flag.ExitOnError)
+	docCmd.StringVar(region, "region", "", "Region, one of \"europe\", \"middle east\", \"africa\", \"asia\", \"pacific\" or \"north america\"")
+
 	if len(os.Args) < 2 {
 		printTokenUsage()
 		os.Exit(1)
@@ -139,6 +142,25 @@ func main() {
 			os.Exit(1)
 		}
 		err = api.DeleteToken(*pod, *uuid)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	case "doc":
+		err := docCmd.Parse(os.Args[2:])
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		if *region == "" {
+			os.Exit(1)
+		}
+		api, err := domain.NewOverkizTokenApi(*region)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = api.Doc()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)

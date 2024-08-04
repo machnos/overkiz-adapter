@@ -102,7 +102,7 @@ func (o *Overkiz) Devices(class string) []*Device {
 	return result
 }
 
-func (o *Overkiz) RollerShutters(actionName string) (int, error) {
+func (o *Overkiz) RollerShutters(actionName string, parameters []string) (int, error) {
 	devices := o.Devices("RollerShutter")
 	if len(devices) == 0 {
 		return 0, nil
@@ -115,7 +115,8 @@ func (o *Overkiz) RollerShutters(actionName string) (int, error) {
 			DeviceURL: device.DeviceURL,
 		}
 		ac.Commands = append(ac.Commands, &command{
-			Name: actionName,
+			Name:       actionName,
+			Parameters: parameters,
 		})
 		ar.Actions = append(ar.Actions, ac)
 	}
