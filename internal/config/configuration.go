@@ -13,9 +13,11 @@ type Configuration struct {
 }
 
 type Http struct {
-	Interface   string `json:"interface"`
-	Port        uint16 `json:"port"`
-	ContextRoot string `json:"context_root"`
+	Interface    string   `json:"interface"`
+	Port         uint16   `json:"port"`
+	ContextRoot  string   `json:"context_root"`
+	AllowedHosts []string `json:"allowed_hosts"`
+	BehindProxy  bool     `json:"behind_proxy"`
 }
 
 func LoadConfiguration(configFile string) (*Configuration, error) {

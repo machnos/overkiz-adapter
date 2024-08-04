@@ -37,16 +37,20 @@ func NewServer(config *config.Http, overkiz *domain.Overkiz) (*Server, error) {
 	}
 
 	r := chi.NewRouter()
+	if config.BehindProxy {
+		r.Use(middleware.RealIP)
+	}
+	if len(config.AllowedHosts) > 0 {
+		r.Use(HostFilter(config.AllowedHosts...))
+	}
 	r.Use(
 		render.SetContentType(render.ContentTypeJSON),
 		middleware.CleanPath,
 		middleware.RequestID,
-		middleware.RealIP,
 		middleware.RedirectSlashes,
 		middleware.Recoverer,
 		middleware.Timeout(60*time.Second),
 	)
-
 	r.Route(contextRoot, func(r chi.Router) {
 		r.Route("/api/v1", func(r chi.Router) {
 			r.Get("/devices", s.getDevices())
