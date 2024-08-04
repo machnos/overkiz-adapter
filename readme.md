@@ -96,13 +96,13 @@ First we need to create a json configuration file for the executable. The conten
   }
 }
 ```
-*token* - The token is the token you've received with the `overkiz-token create` command.
-*host* - The hostname or ip address of the gateway.
-*http.interface* The interface to listen on. 
-*http.port* The port to listen on.
-*http.context_root* The context root the api should have.
-*http.allowed_hosts* An optional list of domain names or ip addresses that are allowed to access the api.
-*behind_proxy* Set to true if the api is accessed via a proxy. The application will then look at the X-Forwarded-For header to determine if access is allowed.
+* *token* - The token is the token you've received with the `overkiz-token create` command.
+* *host* - The hostname or ip address of the gateway.
+* *http.interface* The interface to listen on. 
+* *http.port* The port to listen on.
+* *http.context_root* The context root the api should have.
+* *http.allowed_hosts* An optional list of domain names or ip addresses that are allowed to access the api.
+* *behind_proxy* Set to true if the api is accessed via a proxy. The application will then look at the X-Forwarded-For header to determine if access is allowed.
 
 Once the configuration file is created you can start the application by executing
 ```shell
