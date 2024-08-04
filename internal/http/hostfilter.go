@@ -21,7 +21,7 @@ func HostFilter(hosts ...string) func(next http.Handler) http.Handler {
 			}
 			addresses = append(addresses, host)
 			lookupHosts, err := net.LookupAddr(host)
-			if err != nil {
+			if err == nil {
 				addresses = append(addresses, lookupHosts...)
 			}
 			for _, address := range addresses {
